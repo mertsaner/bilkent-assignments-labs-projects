@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>CS315 HW1</h2>
+<p>Yasin BALCANCI / 21501109 / Sec: 1</p>
+<script>
+function foo(a = 5, b = 4, c = 3){
+	alert("foo: " + (a * b + c));
+}
+function bar(){
+	var sum = 0;
+	for(var i = 0; i < arguments.length; i++)
+		sum += arguments[i];
+	alert("bar: " + sum);
+}
+function passBy(x, y){
+	y.t = 5;
+	x = 5;
+}
+function main(){
+	foo(10, 9, 8); 				//Positional Parameters / a = 10, b = 9, c = 8 / prints 98
+	foo(); 						// a, b and c as Default Paramaters / a = 5, b = 4, c = 3 / prints 60
+	foo(10); 					// b and c as Default Parameters / a = 10, b = 4, c = 3 / prints 120
+	
+	bar(); 				// ************************************** / prints 0
+	bar(10);			//  Variable Number of Actual Parameters  / prints 10
+	bar(10, 20, 30);	// ************************************** / prints 60
+	
+	var x = 3;
+	let y = {t:4};
+	alert("Before passBy, x = " + x + ", y.t = " + y.t);
+	passBy(x, y);
+	alert("After passBy, x = " + x + ", y.t = " + y.t);
+}
+</script>
+<body onload="main()">
+
+<p id="code"></p>
+<p id="out1"></p>
+<p id="out2"></p>
+<p id="out3"></p>
+<p id="out4"></p>
+
+</body>
+</html> 

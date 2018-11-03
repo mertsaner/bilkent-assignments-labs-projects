@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>CS315 HW1</h2>
+<p>Yasin BALCANCI / 21501109 / Sec: 1</p>
+<script>
+function main(){
+	var x = 5;
+		function foo() {
+			x = 6;
+			document.getElementById("out1").innerHTML = x;
+		}
+		function bar(){
+			function cet(){
+				x = 4;	
+				document.getElementById("out2").innerHTML = x;
+			}
+			x = 7;
+			foo();
+			cet();
+			document.getElementById("out3").innerHTML = x;
+		}
+	bar();
+	document.getElementById("out4").innerHTML = x;
+}
+</script>
+<body onload="main()">
+<?php
+function fooPHP(){
+	echo "Hello World!";
+}
+?>
+
+
+<p id="code"></p>
+<p id="out1"></p>
+<p id="out2"></p>
+<p id="out3"></p>
+<p id="out4"></p>
+
+</body>
+</html> 

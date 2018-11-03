@@ -1,0 +1,7 @@
+(define (insert-bst item list1)
+	(if (null? list1)
+		(list item '() '())
+			(if (<= item (car list1))
+				(list (car list1) (insert-bst item (car (cdr list1))) (car (cdr (cdr list1))))
+					(list (car list1) (car (cdr list1)) (insert-bst item (car (cdr (cdr list1)))))
+)))
