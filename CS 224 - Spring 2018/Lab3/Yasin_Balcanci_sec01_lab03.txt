@@ -1,0 +1,198 @@
+Insert_end:
+	addi $sp, $sp,-8 # make room on stack for 2 new items
+	sw $s0, 4 ($sp) # push $s0 value onto stack
+	sw $s1, 0 ($sp) # push $s1 value onto stack
+	move $s0, $a0	# put the pointer to the current element in $s0
+	lw $s1, 0($s0)
+	move $t3, $a0
+	while2:
+	lw $t2, 0($s1)
+	beq $t2, 0, done2
+	move $s0, $s1	# update the current pointer, to point to the new element
+	lw $s1, 0($s0)
+	j while2
+	done2:
+	li $a0, 8
+	li $v0, 9
+	syscall 
+	#lw $t5, 4($s1)
+	sw $a1, 4($v0)
+	sw $0, 0($v0)
+	sw $v0, 0($s0)
+	lw $s1, 0($s0)
+	#sw $t5, 4($s1)
+	#lw $s1, ($s0)
+	move $a0, $t3
+	li $v0, 0
+	
+	jr $ra
+
+
+displayReverse:
+	addi $sp, $sp,-8 # make room on stack for 2 new items
+	sw $s0, 4 ($sp) # push $s0 value onto stack
+	sw $s1, 0 ($sp) # push $s1 value onto stack
+	move $s0, $a0	# put the pointer to the current element in $s0
+	lw $s1, 0($s0)
+	move $t0, $a0;
+	for:
+	lw $t2, 0($s1)
+	beq $t2, 0, done3
+	
+	done3:
+
+
+Delete_n:
+
+	addi $sp, $sp,-8 # make room on stack for 2 new items
+	sw $s0, 4 ($sp) # push $s0 value onto stack
+	sw $s1, 0 ($sp) # push $s1 value onto stack
+	move $s0, $a0	# put the pointer to the current element in $s0
+	lw $s1, ($s0)
+	move $v1, $a0
+	li $t4, 1 # loop counter
+	
+	while3:
+	beq $s0, 0, del_nNF
+	beq $a1, $t4, del_nF
+	addi $t4, $t4, 1
+	move $t2, $s0
+	move $s0, $s1	# update the current pointer, to point to the new element
+	lw $s1, ($s0)
+	j while3
+	del_nF:
+	lw $t3, ($s0)
+	sw $t3, ($t2)
+	li $v0, 0
+	jr $ra
+	del_nNF:
+	li $v0, -1
+	jr $ra
+	
+	nop
+
+
+
+
+Delete_x:
+	addi $sp, $sp,-8 # make room on stack for 2 new items
+	sw $s0, 4 ($sp) # push $s0 value onto stack
+	sw $s1, 0 ($sp) # push $s1 value onto stack
+	move $s0, $a0	# put the pointer to the current element in $s0
+	lw $s1, ($s0)
+	move $v1, $a0
+	
+	while1:
+	# read the value of pointerToNext in current element
+	lw $t1, 4($s0)
+	beq $t1, $a1, del_xF
+	beq $s0, 0, del_xNF
+	move $t2, $s0
+	move $s0, $s1	# update the current pointer, to point to the new element
+	lw $s1, ($s0)
+	j while1
+	del_xF:
+	lw $t3, ($s0)
+	sw $t3, ($t2)
+	li $v0, 0
+	jr $ra
+	del_xNF:
+	li $v0, -1
+	jr $ra
+	
+	nop
+	.text
+	.globl __start
+	
+__start:
+	la $a0, str
+	li $v0, 4
+	syscall
+	
+	li $v0, 5
+	syscall
+	
+	move $t0, $v0 
+	li $t1, 1
+	li $t2, 0
+	sll $t1, $t1, 31
+	while:
+	beq $t2, 31, done
+	addi $t2, $t2, 1
+	and $t4, 
+	srl
+	done:
+	
+	l.s $f0, a # $f.. are floating point registers
+	cvt.s.w $f12, $f0
+	li $v0, 2
+	syscall # Prints 10.0
+.data
+a: .word 10
+str: .asciiz "Enter the number: "
+
+	.text		
+	.globl __start 
+
+__start:		# execution starts here
+	menu:
+	la $a0, str3
+	li $v0, 4
+	syscall		#menu displayed
+	li $v0, 5
+	syscall
+	beq $v0, 1, summi
+	beq $v0, 2, multi
+	j menu
+	
+	summi:
+	la $a0, str0
+	li $v0, 4
+	syscall		#first int taken and loaded to $t0
+	li $v0, 5
+	syscall
+	move $t0, $v0
+	li $a0, 0 #sum
+	recursiveSummation:
+	add $a0, $a0, $t0
+	addi $t0, $t0, -1
+	bne $t0, 0, recursiveSummation
+	li $v0, 1
+	syscall
+	j end
+	
+	multi:
+	la $a0, str1
+	li $v0, 4
+	syscall		#first int taken and loaded to $t0
+	li $v0, 5
+	syscall
+	move $t0, $v0
+	
+	la $a0, str2
+	li $v0, 4
+	syscall		#second int taken and loaded to $t1
+	li $v0, 5
+	syscall
+	move $t1, $v0
+	li $t2, 0	#multiplication
+	recursiveMultiplication:
+	add $t2, $t2, $t0 
+	addi $t1, $t1, -1
+	bne $t1, 0, recursiveMultiplication
+	move $a0, $t2
+	li $v0, 1
+	syscall
+	end:
+	li $v0, 10
+	syscall
+	
+	
+	
+	
+	.data
+str0:	.asciiz "number: "
+str1:	.asciiz "number1: "
+str2:	.asciiz "number2: "
+str3: 	.asciiz "1.Summation\n2.Multiplication\n"
+

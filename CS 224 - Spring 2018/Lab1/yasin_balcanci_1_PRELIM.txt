@@ -1,0 +1,26 @@
+CS224
+Section No.: 1
+Spring 2018
+Lab No.: 1
+Yasin Balcancý / 21501109
+
+2)
+# $s0 = c. $s1 = d. $s2 = x.  
+sub	$t0, $s0, $s1 	# t0 = c - d
+remi	$s2, $t0, 2($0) 	# x = (c - d) % 2
+
+3)
+"Hello" is "0A - 48 - 65 - 6C - 6C - 6F - 0A" 
+2 words: 0x6C65480A and 0x000A6F6C
+
+4)
+a) Symbolic machine instruction is an instruction that is convertible to the machine code.
+add c, a, b means c = a + b.
+sub f, d, e means f = d - e.
+b)Machine instruction is the code that computer accepts and executes, consisting of 32bit numbers.
+0x11111111111111111111111111111
+0x10101010101010101010101010101010
+c)Assembler directive is a directive that is in assembly language, executed via registers.
+sub	$t0, $s0, $s1 
+add	$t0, $s0, $s1 
+d)Pseudo instruction is not understandable by computer, it makes the code easier for people to understand.

@@ -1,0 +1,7 @@
+addi $sp, $sp,-8 # make room on stack for 2 new items
+sw $s0, 4 ($sp) # push $s0 value onto stack
+sw $s1, 0 ($sp) # push $s1 value onto stack
+move $s0, $a0	# put the pointer to the current element in $s0
+
+move $s0, $s1	# update the current pointer, to point to the new element
+lw $s1, ($s0)	# read the value of pointerToNext in current element

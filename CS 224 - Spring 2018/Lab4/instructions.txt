@@ -1,0 +1,19 @@
+ADDI $v0 $zero 0x0005
+ADDI $v1 $zero 0x000C
+ADDI $a3 $v1 0xFFF7
+OR $a0 $a3 $v0
+AND $a1 $v1 $a0
+ADD $a1 $a1 $a0
+BEQ $a1 $a3 0x000A
+SLT $a0 $v1 $a0
+BEQ $a0 $zero 0x0001
+ADDI $a1 $zero 0x0000
+SLT $a0 $a3 $v0
+ADD $a3 $a0 $a1
+SUB $a3 $a3 $v0
+SW $a3 0x0044 $v1
+LW $v0 0x0050 $zero
+J 0x0000011
+ADDI $v0 $zero 0x0001
+SW $v0 0x0054 $zero
+J 0x0000012

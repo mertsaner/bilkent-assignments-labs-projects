@@ -1,0 +1,212 @@
+.text		
+	.globl __start 
+
+__start:		# execution starts here
+	la $a0,menu
+	li $v0,4	# system call to print
+	syscall	#   out a string
+	li $v0, 5  # system call to input
+	syscall	
+	
+	addi $t0, $v0, 0
+	beq $t0, 1, readSize
+	beq $t0, 2, allocate
+	beq $t0, 3, displayArrayElement
+	beq $t0, 4, rowAdd
+	beq $t0, 5, colAdd
+	beq $t0, 6, displayElement
+	beq $t0, 7, quit
+	
+	
+	readSize:
+	la $a0,str2
+	li $v0,4	# system call to print
+	syscall
+	li $v0, 5
+	syscall
+	move $s4, $v0	# s4 = N 
+	mul $a2, $v0, $v0 # a2: number of integers
+	j __start
+	
+	allocate:
+	mul $a0, $a2, 4 # a0: required space
+	li $v0, 9
+	syscall
+	move $a3, $v0 # adress of the array is in a3 and t1 now	
+	move $t1, $a3
+	li $t0, 0
+	while1:
+	beq $t0, $a2, done1
+	addi $a0, $t0, 1
+	sw $a0, ($t1)
+	addi $t0, $t0, 1
+	addi $t1, $t1, 4
+	j while1
+	done1:
+	j __start
+	
+	displayArrayElement:
+	la $a0,arInd	# put string address into a0
+	li $v0,4	# system call to print
+	syscall		# out a string
+	li $v0, 5
+	syscall
+	move $t2, $v0
+	move $t1, $a3
+	li $t0, 0
+	while2:
+	beq $t0, $a2, done2
+	addi $a0, $t0, 1
+	bne $t2, $a0, noPrint1
+	la $a0,str	# put string address into a0
+	li $v0,4	# system call to print
+	syscall		# out a string
+	lw $a0, ($t1)
+	li $v0, 1  # 1 is system call code to print int
+	syscall   
+	la $a0,newLine	# ************
+	li $v0,4	# New Line
+	syscall		# ************
+	noPrint1:  
+	addi $t0, $t0, 1
+	addi $t1, $t1, 4
+	j while2
+	done2:
+	j __start
+
+	displayElement:
+	la $a0,askRow	# put string address into a0
+	li $v0,4	# system call to print
+	syscall		# out a string
+	li $v0, 5
+	syscall
+	move $t2, $v0	# t2 is row
+	la $a0,askCol	# put string address into a0
+	li $v0,4	# system call to print
+	syscall		# out a string
+	li $v0, 5
+	syscall
+	move $t3, $v0	# t3 is column
+	
+	addi $t2, $t2, -1 #***************
+	addi $t3, $t3, -1 #***************
+	mul $t2, $t2, $s4 # Formula to compute position
+	add $t2, $t2, $t3 #***************
+	addi $t2, $t2, 1  #***************
+	
+	li $t0, 0
+	move $t1, $a3
+	while3:
+	beq $t0, $a2, done3
+	addi $a0, $t0, 1
+	bne $t2, $a0, noPrint2
+	la $a0,str	# put string address into a0
+	li $v0,4	# system call to print
+	syscall		# out a string
+	lw $a0, ($t1)
+	li $v0, 1  # 1 is system call code to print int
+	syscall   
+	la $a0,newLine	# ************
+	li $v0,4	# New Line
+	syscall		# ************
+	noPrint2:  
+	addi $t0, $t0, 1
+	addi $t1, $t1, 4
+	j while3
+	done3:
+	#addi $a0, $t1, 4
+	#move $a1, $a2
+	j __start
+	
+	colAdd:
+	la $a0,askCol	# put string address into a0
+	li $v0,4	# system call to print
+	syscall		# out a string
+	li $v0, 5
+	syscall
+	move $t3, $v0	# t3 is column	
+	li $t0, 0	# t0 row index
+	li $t4, 0	# t4 col index
+	move $t1, $a3
+	li $t2, 0	# t2 is the sum
+	while4:
+	beq $t0, $s4, done4 # loop for rows
+	while5:
+	beq $t4, $s4, done5 # loop for columns
+	addi $a0, $t4, 1
+	bne $a0, $t3, noSum1
+	lw $t5, ($t1)
+	add $t2, $t2, $t5
+	noSum1:
+	addi $t4, $t4, 1
+	addi $t1, $t1, 4
+	j while5
+	done5:
+	addi $t0, $t0, 1
+	li $t4, 0	# t4 col index
+	j while4
+	done4:
+	la $a0,sum	# put string address into a0
+	li $v0,4	# system call to print
+	syscall		# out a string
+	move $a0, $t2
+	li $v0, 1  	# 1 is system call code to print int
+	syscall   
+	la $a0,newLine	# ************
+	li $v0,4	# New Line
+	syscall		# ************
+	j __start
+	
+	rowAdd:
+	la $a0,askRow	# put string address into a0
+	li $v0,4	# system call to print
+	syscall		# out a string
+	li $v0, 5
+	syscall
+	move $t3, $v0	# t3 is row	
+	li $t0, 0	# t0 row index
+	li $t4, 0	# t4 col index
+	move $t1, $a3
+	li $t2, 0	# t2 is the sum
+	while6:
+	beq $t0, $s4, done6 # loop for rows
+	while7:
+	beq $t4, $s4, done7 # loop for columns
+	addi $a0, $t0, 1
+	bne $a0, $t3, noSum2
+	lw $t5, ($t1)
+	add $t2, $t2, $t5
+	noSum2:
+	addi $t4, $t4, 1
+	addi $t1, $t1, 4
+	j while7
+	done7:
+	addi $t0, $t0, 1
+	li $t4, 0	# t4 col index
+	j while6
+	done6:
+	la $a0,sum	# put string address into a0
+	li $v0,4	# system call to print
+	syscall		# out a string
+	move $a0, $t2
+	li $v0, 1  	# 1 is system call code to print int
+	syscall   
+	la $a0,newLine	# ************
+	li $v0,4	# New Line
+	syscall		# ************
+	j __start
+	
+	quit:
+	li $v0, 10  # exit
+	syscall	
+
+
+	.data
+menu:	.asciiz "1. Input size in terms of dimensions.\n2. Allocate memory.\n3. Element to display content of.\n4. Row-major summation.\n5. Column-major summation.\n6. Enter row and column to display element.\n7. Quit\n"
+str:   .asciiz "\nItem: "
+str2: .asciiz "Enter size: "
+newLine: .asciiz "\n"
+arInd: .asciiz "Enter array index to display content: "
+askRow: .asciiz "Enter row: "
+askCol: .asciiz "Enter column: "
+sum: .asciiz "Sum: "

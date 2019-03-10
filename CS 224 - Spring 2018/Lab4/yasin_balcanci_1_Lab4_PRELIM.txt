@@ -1,0 +1,98 @@
+CS224 Preliminary Report
+Section No.: 1
+Spring 2018
+Lab No.: 4
+Yasin Balcancý / 21501109
+1)
+In single-cycle, one instruction is executed using one cycle and it takes equal time for all instructions to be executed to the slowest instruction to be executed. In multi-cycle, one instruction is executed using several cycles, making it possible for some instructions to be executed faster than others. In pipelined processor, a cycle is broken into parts and an operation is executed in every part. Clock frequency is faster, so several instructions are executed in one cycle.
+2)
+The Datapath:
+PC: It keeps the address of the instruction to be executed. It takes the adress of the next instruction and clk as input and gives the adress of the current instruction as output both of which are 32 bits.
+Instruction Memory: Instruction memory keeps instructions. It takes the address of the current instruction as input and gives the corresponding instruction as output both of which are 32 bits.
+Register File: Takes 6 inputs one of which is clk. One 1 bit control input that controls whether a data will be written to register. Three 5 bits inputs representing registers to be read data from or write to. And one 32 bits input representing the data that will be written. Gives 2 outputs that the registers that two 5 bits inputs correspond to has.
+ALU: Takes 3 input one of which is 3 bits control signal that determines the operation to be applied to the other two 32 bits inputs. It gives two outputs; 32 bit one is the result of the operation and 1 bit one to show whether the result is 0 or not.
+Data Memory: Takes 4 inputs one of which is clk, One 1 bit input controls whether a data will be written to a register or not. Other two 32 bits inputs take datas. It gives one 32 bits output which is data given as input.
+
+The Control:
+Main Decoder: Determines the function to be executed according to the opcode obtained from the instruction code, takes this 6 bits input. Gives 8 outputs which will determine the operations.
+ALU Decoder: Determines the operation that ALU will perform by taking 6 bits fuction code and 2 bits ALU operation inputs and giving 3 bits ALU control output.
+
+3)
+PC(input clk, input[32] newPc, output[32] pc)
+
+InstructionMemory(input[32] pc, output[32] instr)
+
+RegisterFile(input clk, writeEnable, input[32] writeData, input[5] rs, rt, rd, output[32] readData1, readData2) 
+
+ALU(input[3] control, input[32] srcA, srcB, output zero, output[32] result)
+
+DataMemory(input clk, writeEnable, input[32] data, writeData, output[32] readData)
+
+MainDecoder(input[6] opcode, output memToReg, memWrite, branch, aluSrc, regDst, regWrite, output[2] aluOp)
+
+ALUDecoder(input[6] funcCode, input[2] aluOp, output[3] aluControl)
+
+
+4)
+
+Location
+Machine Instruction
+Assembly Instruction
+00
+20020005
+addi $v0 $zero 0x0005
+04
+2003000c
+addi $v1 $zero 0x000C
+08
+2067fff7
+addi $a3 $v1 0xFFF7
+0c
+00e22025
+or $a0 $a3 $v0
+10
+00642824
+and $a1 $v1 $a0
+14
+00a42820
+add $a1 $a1 $a0
+18
+10a7000a
+beq $a1 $a3 0x000A
+1c
+0064202a
+slt $a0 $v1 $a0
+20
+10800001
+beq $a0 $zero 0x0001
+24
+20050000
+addi $a1 $zero 0x0000
+28
+00e2202a
+slt $a0 $a3 $v0
+2c
+00853820
+add $a3 $a0 $a1
+30
+00e23822
+sub $a3 $a3 $v0
+34
+ac670044
+sw $a3 0x0044 $v1
+38
+8c020050
+lw $v0 0x0050 $zero
+3c
+08000011
+j 0x0000011
+40
+20020001
+addi $v0 $zero 0x0001
+44
+ac020054
+sw $v0 0x0054 $zero
+48
+08000012
+j 0x0000012
+
